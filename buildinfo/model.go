@@ -67,10 +67,10 @@ func checkRepository() {
 	}
 }
 
-const commitRegex = "^[0-9a-f]{5,40}$"
+const sha1Regex = "^[0-9a-f]{5,40}$"
 
 func checkCommit() {
-	if regexp.MustCompile(commitRegex).MatchString(Commit) != true {
+	if regexp.MustCompile(sha1Regex).MatchString(Commit) != true {
 		panic("The commit should be SHA1 git hash")
 	}
 }
