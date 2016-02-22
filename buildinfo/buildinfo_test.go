@@ -13,11 +13,11 @@ var expected string
 
 func setUp() {
 	Version = "0.0.1"
-	Repository = "github.com/Financial-Times/a-ft-service"
-	Commit = "b1d23060f717364b40a6506f74429f9a290a2b71"
+	Repository = "https://github.com/Financial-Times/a-ft-service"
+	Commit = "2fd4e1c67a2d28fced849ee1bb76e7391b93eb12"
 	Builder = "go version go1.5.2 darwin/amd64"
-	expected = `{"repository":"github.com/Financial-Times/a-ft-service", "version":"0.0.1", "builder":"go version go1.5.2 darwin/amd64", "dateTime":"` +
-		fmt.Sprintf("%d%02d%02d%02d%02d", now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute()) + `", "commit":"b1d23060f717364b40a6506f74429f9a290a2b71"}`
+	expected = `{"repository":"https://github.com/Financial-Times/a-ft-service", "version":"0.0.1", "builder":"go version go1.5.2 darwin/amd64", "dateTime":"` +
+		fmt.Sprintf("%d%02d%02d%02d%02d", now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute()) + `", "commit":"2fd4e1c67a2d28fced849ee1bb76e7391b93eb12"}`
 
 }
 

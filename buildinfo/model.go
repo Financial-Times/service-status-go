@@ -2,6 +2,8 @@ package buildinfo
 
 import (
 	"fmt"
+	"github.com/hashicorp/go-version"
+	"regexp"
 	"time"
 )
 
@@ -31,5 +33,51 @@ type buildInfo struct {
 }
 
 func GetBuildInfo() buildInfo {
+
+	if Repository != "" {
+		checkRepository()
+	} else {
+		Repository = "unknown"
+	}
+
+	if Commit != "" {
+		checkCommit()
+	} else {
+		Commit = "unknown"
+	}
+
+	if Version != "" {
+		checkVersion()
+	} else {
+		Version = "unknown"
+	}
+
+	if Builder == "" {
+		Builder = "unknown"
+	}
+
 	return buildInfo{Repository, Commit, Version, Builder, dateTime}
+}
+
+const urlRegex = "^(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?$"
+
+func checkRepository() {
+	if regexp.MustCompile(urlRegex).MatchString(Repository) != true {
+		panic("The repository value should be a URL")
+	}
+}
+
+const commitRegex = "^[0-9a-f]{5,40}$"
+
+func checkCommit() {
+	if regexp.MustCompile(commitRegex).MatchString(Commit) != true {
+		panic("The commit should be SHA1 git hash")
+	}
+}
+
+func checkVersion() {
+	_, err := version.NewVersion(Version)
+	if err != nil {
+		panic("Version is not complain with SemVer")
+	}
 }
