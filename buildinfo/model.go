@@ -1,7 +1,6 @@
 package buildinfo
 
 import (
-	"fmt"
 	"github.com/hashicorp/go-version"
 	"regexp"
 	"time"
@@ -19,9 +18,7 @@ var Commit string
 // Builder is more freeform, should include the the signature of the thing that built the code, eg. output of 'go version'
 var Builder string
 
-var now = time.Now()
-
-var dateTime = fmt.Sprintf("%d%02d%02d%02d%02d", now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute())
+var DateTime string
 
 // BuildInfo structure to return (model)
 type buildInfo struct {
@@ -56,7 +53,13 @@ func GetBuildInfo() buildInfo {
 		Builder = "unknown"
 	}
 
-	return buildInfo{Repository, Commit, Version, Builder, dateTime}
+	if DateTime != "" {
+		checkDateTime()
+	} else {
+		DateTime = "unknown"
+	}
+
+	return buildInfo{Repository, Commit, Version, Builder, DateTime}
 }
 
 const urlRegex = "^(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?$"
@@ -79,5 +82,12 @@ func checkVersion() {
 	_, err := version.NewVersion(Version)
 	if err != nil {
 		panic("Version is not complain with SemVer")
+	}
+}
+
+func checkDateTime() {
+	_, err := time.Parse(time.RFC3339Nano, DateTime)
+	if err != nil {
+		panic(err)
 	}
 }

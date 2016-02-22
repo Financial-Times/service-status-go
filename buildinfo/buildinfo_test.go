@@ -2,7 +2,6 @@ package buildinfo
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
@@ -12,12 +11,16 @@ import (
 var expected string
 
 func setUp() {
-	Version = "0.0.1"
+	Version = "0.0.1-RC1"
 	Repository = "https://github.com/Financial-Times/a-ft-service"
 	Commit = "2fd4e1c67a2d28fced849ee1bb76e7391b93eb12"
 	Builder = "go version go1.5.2 darwin/amd64"
-	expected = `{"repository":"https://github.com/Financial-Times/a-ft-service", "version":"0.0.1", "builder":"go version go1.5.2 darwin/amd64", "dateTime":"` +
-		fmt.Sprintf("%d%02d%02d%02d%02d", now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute()) + `", "commit":"2fd4e1c67a2d28fced849ee1bb76e7391b93eb12"}`
+	DateTime = "2013-06-05T14:10:43Z"
+	expected = `{"repository":"https://github.com/Financial-Times/a-ft-service",` +
+		`"version":"0.0.1-RC1",` +
+		`"builder":"go version go1.5.2 darwin/amd64",` +
+		`"dateTime":"2013-06-05T14:10:43Z",` +
+		`"commit":"2fd4e1c67a2d28fced849ee1bb76e7391b93eb12"}`
 
 }
 
