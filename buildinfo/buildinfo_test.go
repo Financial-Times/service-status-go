@@ -15,11 +15,11 @@ func setUp() {
 	repository = "https://github.com/Financial-Times/a-ft-service"
 	commit = "2fd4e1c67a2d28fced849ee1bb76e7391b93eb12"
 	builder = "go version go1.5.2 darwin/amd64"
-	dateTime = "2013-06-05T14:10:43Z"
+	dateTime = "20130605141043"
 	expected = `{"repository":"https://github.com/Financial-Times/a-ft-service",` +
 		`"version":"0.0.1-RC1",` +
 		`"builder":"go version go1.5.2 darwin/amd64",` +
-		`"dateTime":"2013-06-05T14:10:43Z",` +
+		`"dateTime":"20130605141043",` +
 		`"commit":"2fd4e1c67a2d28fced849ee1bb76e7391b93eb12"}`
 
 }
