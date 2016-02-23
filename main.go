@@ -6,5 +6,6 @@ import (
 )
 
 func main() {
-	fmt.Printf("Build info is %+v", buildinfo.GetBuildInfo)
+	info := buildinfo.GetBuildInfo()
+	fmt.Printf("Build info is %v+", info)
 }
