@@ -1,6 +1,7 @@
 package buildinfo
 
 import (
+	"fmt"
 	semver "github.com/hashicorp/go-version"
 	"regexp"
 	"time"
@@ -24,10 +25,8 @@ type BuildInfo struct {
 // GetBuildInfo returns the current buildInfo as set by the ldflags
 func GetBuildInfo() BuildInfo {
 
-	if repository != "" {
-		checkRepository()
-	} else {
-		repository = "unknown"
+	if err := parseRepository(repository); err != nil {
+		repository = err.Error()
 	}
 
 	if commit != "" {
@@ -55,12 +54,20 @@ func GetBuildInfo() BuildInfo {
 	return BuildInfo{repository, commit, version, builder, dateTime}
 }
 
-const urlRegex = "^(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?$"
+const urlMatchRegex = "^(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?$"
 
-func checkRepository() {
-	if regexp.MustCompile(urlRegex).MatchString(repository) != true {
-		panic("The repository value should be a URL")
+var urlRegex *regexp.Regexp
+
+func parseRepository(repository string) (err error) {
+	if urlRegex == nil {
+		urlRegex, err = regexp.Compile(urlMatchRegex)
 	}
+	if (err != nil) && (urlRegex != nil) {
+		if !urlRegex.Match([]byte(repository)) {
+			err = fmt.Errorf("Repository value %s does not match regex %s", repository, urlMatchRegex)
+		}
+	}
+	return err
 }
 
 const sha1Regex = "^[0-9a-f]{5,40}$"
