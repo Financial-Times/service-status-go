@@ -1,27 +1,19 @@
 package buildinfo
 
 import (
-	"github.com/hashicorp/go-version"
+	semver "github.com/hashicorp/go-version"
 	"regexp"
 	"time"
 )
 
-// Version (x.y.z) is the [semver](http://semver.org) of this build
-var Version string
+var version string
+var repository string
+var commit string
+var builder string
+var dateTime string
 
-// Repository is where the code was located, eg. the github url
-var Repository string
-
-// Commit or revision of the source tree that was build (eg. the sha1 hash from `gitgit rev-parse HEAD`)
-var Commit string
-
-// Builder is more freeform, should include the the signature of the thing that built the code, eg. output of 'go version'
-var Builder string
-
-var DateTime string
-
-// BuildInfo structure to return (model)
-type buildInfo struct {
+// BuildInfo structure
+type BuildInfo struct {
 	Repository string `json:"repository"`
 	Commit     string `json:"commit"`
 	Version    string `json:"version"`
@@ -29,43 +21,44 @@ type buildInfo struct {
 	DateTime   string `json:"dateTime"`
 }
 
-func GetBuildInfo() buildInfo {
+// GetBuildInfo returns the current buildInfo as set by the ldflags
+func GetBuildInfo() BuildInfo {
 
-	if Repository != "" {
+	if repository != "" {
 		checkRepository()
 	} else {
-		Repository = "unknown"
+		repository = "unknown"
 	}
 
-	if Commit != "" {
+	if commit != "" {
 		checkCommit()
 	} else {
-		Commit = "unknown"
+		commit = "unknown"
 	}
 
-	if Version != "" {
+	if version != "" {
 		checkVersion()
 	} else {
-		Version = "unknown"
+		version = "unknown"
 	}
 
-	if Builder == "" {
-		Builder = "unknown"
+	if builder == "" {
+		builder = "unknown"
 	}
 
-	if DateTime != "" {
+	if dateTime != "" {
 		checkDateTime()
 	} else {
-		DateTime = "unknown"
+		dateTime = "unknown"
 	}
 
-	return buildInfo{Repository, Commit, Version, Builder, DateTime}
+	return BuildInfo{repository, commit, version, builder, dateTime}
 }
 
 const urlRegex = "^(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?$"
 
 func checkRepository() {
-	if regexp.MustCompile(urlRegex).MatchString(Repository) != true {
+	if regexp.MustCompile(urlRegex).MatchString(repository) != true {
 		panic("The repository value should be a URL")
 	}
 }
@@ -73,20 +66,20 @@ func checkRepository() {
 const sha1Regex = "^[0-9a-f]{5,40}$"
 
 func checkCommit() {
-	if regexp.MustCompile(sha1Regex).MatchString(Commit) != true {
+	if regexp.MustCompile(sha1Regex).MatchString(commit) != true {
 		panic("The commit should be SHA1 git hash")
 	}
 }
 
 func checkVersion() {
-	_, err := version.NewVersion(Version)
+	_, err := semver.NewVersion(version)
 	if err != nil {
 		panic("Version is not complain with SemVer")
 	}
 }
 
 func checkDateTime() {
-	_, err := time.Parse(time.RFC3339Nano, DateTime)
+	_, err := time.Parse(time.RFC3339Nano, dateTime)
 	if err != nil {
 		panic(err)
 	}
