@@ -70,8 +70,10 @@ func parseRevision() error {
 }
 
 func parseVersion() error {
-	_, err := semver.NewVersion(version)
-	return err
+	if _, err := semver.NewVersion(version); err != nil {
+		return fmt.Errorf("Version %s is not a semantic version", version)
+	}
+	return nil
 }
 
 func parseDateTime() error {
