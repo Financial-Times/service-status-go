@@ -10,6 +10,6 @@ This depends on the -ldflags feature which allows you to set vars. As an example
 go get github.com/Financial-Times/service-status-go
 cd ${GOPATH}/src/github.com/Financial-Times/service-status-go
 flags="$(${GOPATH}/src/github.com/Financial-Times/service-status-go/buildinfo/ldFlags.sh)"
-go build -n -x -ldflags="${flags}"
-./service-status-go | jq '.'
+go install -ldflags="${flags}"
+service-status-go | jq '.'
 ```
