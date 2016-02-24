@@ -19,7 +19,7 @@ func SetUp() {
 		`"builder":"go version go1.5.2 darwin/amd64",` +
 		`"dateTime":"20130605141043",` +
 		`"revision":"2fd4e1c67a2d28fced849ee1bb76e7391b93eb12"}`
-
+	parseAndConstruct()
 }
 
 func TestModel(t *testing.T) {
