@@ -5,11 +5,11 @@ This library provides a small set of reusable features that most of our microser
 ## BuildInfo
 *TODO fix passing of flags, doesn't seem to work at the moment !*
 
-This depends on the -ldflags feature which allows you to set vars. As an example build this project as follows:
+This depends on the -ldflags feature which allows you to set vars. As an example build this project could be:
 ```
 go get github.com/Financial-Times/service-status-go
-cd  github.com/Financial-Times/service-status-go
-flags="-X github.com/Financial-Times/service-status-go/buildinfo/version=0.0.1 -X github.com/Financial-Times/service-status-go/buildinfo/repository=https://github.com/Financial-Times/service-status-go.git -X github.com/Financial-Times/service-status-go/buildinfo/commit=`git rev-parse HEAD` -X github.com/Financial-Times/service-status-go/buildinfo/builder=`go version` -X github.com/Financial-Times/service-status-go/buildinfo/dateTime=`TZ=UTC date +%Y%m%d%H%M%S`"
-go install -ldflags $flags
-service-status-go
+cd ${GOPATH}/src/github.com/Financial-Times/service-status-go
+flags="$(${GOPATH}/src/github.com/Financial-Times/service-status-go/buildinfo/ldFlags.sh)"
+go build -n -x -ldflags="${flags}"
+./service-status-go | jq '.'
 ```
