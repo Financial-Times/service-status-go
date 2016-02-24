@@ -12,7 +12,7 @@ revision="revision=$(git rev-parse HEAD)"
 builder="builder=$(go version)"
 
 
-for flag in "$version" "$datestamp" "$repository" "$revision" "$builder"
+for flag in "$version" "$dateTime" "$repository" "$revision" "$builder"
 do
   set -- $flag
   ldflag="-X '"${package}${flag}"'"

@@ -3,40 +3,28 @@ package buildinfo
 import (
 	"encoding/json"
 	"github.com/stretchr/testify/assert"
-	"net/http"
-	"net/http/httptest"
 	"testing"
 )
 
-var expected string
+var Expected string
 
-func setUp() {
+func SetUp() {
 	version = "0.0.1-RC1"
-	repository = "https://github.com/Financial-Times/a-ft-service"
-	commit = "2fd4e1c67a2d28fced849ee1bb76e7391b93eb12"
+	repository = "https://github.com/Financial-Times/a-ft-service.git"
+	revision = "2fd4e1c67a2d28fced849ee1bb76e7391b93eb12"
 	builder = "go version go1.5.2 darwin/amd64"
 	dateTime = "20130605141043"
-	expected = `{"repository":"https://github.com/Financial-Times/a-ft-service",` +
+	Expected = `{"repository":"https://github.com/Financial-Times/a-ft-service.git",` +
 		`"version":"0.0.1-RC1",` +
 		`"builder":"go version go1.5.2 darwin/amd64",` +
 		`"dateTime":"20130605141043",` +
-		`"commit":"2fd4e1c67a2d28fced849ee1bb76e7391b93eb12"}`
+		`"revision":"2fd4e1c67a2d28fced849ee1bb76e7391b93eb12"}`
 
 }
 
 func TestModel(t *testing.T) {
-	setUp()
+	SetUp()
 	result, err := json.Marshal(GetBuildInfo())
 	assert.NoError(t, err)
-	assert.JSONEq(t, expected, string(result))
-}
-
-func TestBuildInfoHandler(t *testing.T) {
-	setUp()
-	req, err := http.NewRequest("GET", "build-info", nil)
-	assert.NoError(t, err)
-	w := httptest.NewRecorder()
-	BuildInfoHandler(w, req)
-	assert.Equal(t, w.Code, http.StatusOK)
-	assert.JSONEq(t, expected, w.Body.String())
+	assert.JSONEq(t, Expected, string(result))
 }
