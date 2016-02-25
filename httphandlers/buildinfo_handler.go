@@ -3,10 +3,10 @@ package httphandlers
 import (
 	"encoding/json"
 	"github.com/Financial-Times/service-status-go/buildinfo"
-	"github.com/gorilla/handlers"
-	"github.com/gorilla/mux"
 	"net/http"
 )
+
+type FtHandler func(http.ResponseWriter, *http.Request)
 
 //BuildInfoHandlerFunc is a HandlerFunc that returns a JSON representation of the build-info.
 func BuildInfoHandlerFunc(w http.ResponseWriter, r *http.Request) {
@@ -16,8 +16,11 @@ func BuildInfoHandlerFunc(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-//AppendBuildInfoHandler appends the BuildInfoHandler to a gorilla/mux Router.
-//It enforces to respond to HTTP GETs only.
-func AppendBuildInfoHandler(r *mux.Router) {
-	r.Path("/build-info").Handler(handlers.MethodHandler{"GET": http.HandlerFunc(BuildInfoHandlerFunc)})
+func (f FtHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		f(w, r)
+	} else {
+		w.Header().Set("Allow", "GET")
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+	}
 }
