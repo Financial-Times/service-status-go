@@ -10,11 +10,12 @@ import (
 
 // BuildInfoHandlerFunc uses the buildinfo.GetBuildInfo to respond to requests for build info !
 func BuildInfoHandlerFunc(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	if err := json.NewEncoder(w).Encode(buildinfo.GetBuildInfo()); err != nil {
 		panic(err)
 	}
 }
 
 func AppendBuildInfo(r *mux.Router) {
-	r.Path("/build-info").Handler(handlers.MethodHandler{"GET": http.HandlerFunc(BuildInfoHandlerFunc)}).Header("Content-Type", "application/json; charset=utf-8")
+	r.Path("/build-info").Handler(handlers.MethodHandler{"GET": http.HandlerFunc(BuildInfoHandlerFunc)})
 }
