@@ -8,8 +8,8 @@ import (
 
 type FtHandler func(http.ResponseWriter, *http.Request)
 
-//BuildInfoHandlerFunc is a HandlerFunc that returns a JSON representation of the build-info.
-func BuildInfoHandlerFunc(w http.ResponseWriter, r *http.Request) {
+//BuildInfoHandler is a HandlerFunc that returns a JSON representation of the build-info.
+func BuildInfoHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	if err := json.NewEncoder(w).Encode(buildinfo.GetBuildInfo()); err != nil {
 		panic(err)
