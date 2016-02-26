@@ -13,7 +13,7 @@ for flag in "$version" "$dateTime" "$repository" "$revision" "$builder"
 do
   set -- $flag
   ldflag="-X '"${package}${flag}"'"
-  flags+="$ldflag "
+  flags="$flags $ldflag"
 done
 
 echo $flags
