@@ -11,7 +11,7 @@ func TestPingHandler(t *testing.T) {
 	req, err := http.NewRequest("GET", "ping", nil)
 	assert.NoError(t, err)
 	w := httptest.NewRecorder()
-	Ping(w, req)
+	PingHandler(w, req)
 	assert.Equal(t, w.Code, http.StatusOK)
 	assert.Equal(t, "pong", w.Body.String())
 }
