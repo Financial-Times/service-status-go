@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # The following is a sample of how to create the flags that are passed to `go install`
 # see the top level README.md for details
 
