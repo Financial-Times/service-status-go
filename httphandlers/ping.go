@@ -14,8 +14,8 @@ const (
 
 // PingHandler is a simple handler that always responds with pong as text
 func PingHandler(w http.ResponseWriter, r *http.Request) {
-	if !methodSupported(w, r) {
-		return
+	if methodSupported(w, r) {
+		fmt.Fprintf(w, "pong")
 	}
-	fmt.Fprintf(w, "pong")
+
 }
