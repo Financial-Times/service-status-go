@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # The following is a sample of how to create the flags that are passed to `go install`
 # see the top level README.md for details
 
@@ -13,7 +13,7 @@ for flag in "$version" "$dateTime" "$repository" "$revision" "$builder"
 do
   set -- $flag
   ldflag="-X '"${package}${flag}"'"
-  flags+="$ldflag "
+  flags="$flags $ldflag"
 done
 
 echo $flags
