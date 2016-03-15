@@ -28,3 +28,21 @@ func TestModel(t *testing.T) {
 	assert.NoError(t, err)
 	assert.JSONEq(t, Expected, string(result))
 }
+
+func TestParseRepository(t *testing.T) {
+	validGITURLs := []string{"https://github.com/Financial-Times/service-status-go",
+		"http://github.com/Financial-Times/service-status-go.git",
+		"https://github.com/Financial-Times/service-status-go.git",
+		"git@github.com:Financial-Times/service-status-go.git"}
+	for _, url := range validGITURLs {
+		repository = url
+		assert.NoError(t, parseRepository())
+	}
+	invalidGITURLs := []string{"file:////Users/someone/code/go/src/github.com/Financial-Times/public-brands-api",
+		"ftp://host/somePath/service-status-go.git",
+		"git@github.com/service-status-go.git"}
+	for _, url := range invalidGITURLs {
+		repository = url
+		assert.Error(t, parseRepository())
+	}
+}
