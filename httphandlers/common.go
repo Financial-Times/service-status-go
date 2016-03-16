@@ -7,6 +7,11 @@ import (
 
 const (
 	methodNotAllowed = "Method %s not allowed"
+	contentType      = "Content-Type"
+	applicationJSON  = "application/json; charset=UTF-8"
+	plainText        = "text/plain; charset=US-ASCII"
+	cacheControl     = "Cache-control"
+	noCache          = "no-cache"
 )
 
 func error(msg string) []byte {

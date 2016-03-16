@@ -1,6 +1,7 @@
 package httphandlers
 
 import (
+	"github.com/Financial-Times/service-status-go/gtg"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
@@ -8,7 +9,7 @@ import (
 )
 
 func TestPingHandler(t *testing.T) {
-	req, err := http.NewRequest("GET", "ping", nil)
+	req, err := http.NewRequest("GET", PingPath, nil)
 	assert.NoError(t, err)
 	w := httptest.NewRecorder()
 	PingHandler(w, req)
@@ -32,3 +33,10 @@ func TestBuildInfoHandler(t *testing.T) {
 	assert.Equal(t, w.Code, http.StatusOK)
 	assert.JSONEq(t, expected, w.Body.String())
 }
+
+// func TestGTGHandlerNoError(t *testing.T) {
+// 	req, err := http.NewRequest("GET", GTGPath, nil)
+//         gtg.
+// }
+
+// func everythingIsOK() s
