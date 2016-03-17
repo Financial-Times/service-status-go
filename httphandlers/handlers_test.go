@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 )
 
 func TestPingHandler(t *testing.T) {
@@ -54,6 +55,16 @@ func TestGTGHandlerError(t *testing.T) {
 	assert.NotContains(t, "OK", w.Body.String())
 }
 
+func TestGTGHandlerTimeoutError(t *testing.T) {
+	handler := NewGoodToGoHandler(gtg.StatusChecker(takesTooLong))
+	req, err := http.NewRequest("GET", GTGPath, nil)
+	assert.NoError(t, err)
+	w := httptest.NewRecorder()
+	handler.GoodToGoHandler(w, req)
+	assert.Equal(t, http.StatusServiceUnavailable, w.Code)
+	assert.EqualValues(t, "Timeout running status check", w.Body.String())
+}
+
 func everythingIsOK() (status gtg.Status) {
 	status.GoodToGo = true
 	return status
@@ -62,5 +73,11 @@ func everythingIsOK() (status gtg.Status) {
 func everythingIsNotOK() (status gtg.Status) {
 	status.Message = "I'm sorry, Dave. I'm afraid I can't do that."
 	status.GoodToGo = false
+	return status
+}
+
+func takesTooLong() (status gtg.Status) {
+	time.Sleep(time.Second * 10)
+	status.GoodToGo = true
 	return status
 }
