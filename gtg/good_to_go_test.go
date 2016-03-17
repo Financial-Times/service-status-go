@@ -5,58 +5,39 @@ import (
 	"testing"
 )
 
-func TestCanCreateEmptyStatusChecks(t *testing.T) {
-	assert := assert.New(t)
-	checkers := GoodToGoChecks{}
-	assert.Zero(checkers)
-}
-
 func TestCanRunOneStatusCheckThatAlwaysFails(t *testing.T) {
 	assert := assert.New(t)
-	statusCheck := GoodToGoChecks{
-		Checkers: []StatusChecker{localError},
-	}
-	status := statusCheck.RunChecks()
+	status := StatusChecker(localError).RunCheck()
 	assert.False(status.GoodToGo)
 	assert.EqualValues(status.Message, localErrorMessage)
 }
 
 func TestWillRunOneOfManyStatusCheckThatAlwaysFail(t *testing.T) {
 	assert := assert.New(t)
-	statusCheck := GoodToGoChecks{
-		Checkers: []StatusChecker{localError, localError, localError},
-	}
-	status := statusCheck.RunChecks()
+	statusCheck := FailFastSequentialChecker([]StatusChecker{localError, localError, localError})
+	status := statusCheck.RunCheck()
 	assert.False(status.GoodToGo)
 	assert.EqualValues(localErrorMessage, status.Message)
 }
 
 func TestWillRunAllOfManyStatusCheckThatAlwaysFail(t *testing.T) {
 	assert := assert.New(t)
-	statusCheck := GoodToGoChecks{
-		Checkers:     []StatusChecker{localError, localError, localError},
-		RunAllChecks: true,
-	}
-	status := statusCheck.RunChecks()
+	statusCheck := FailAtEndSequentialChecker([]StatusChecker{localError, localError, localError})
+	status := statusCheck.RunCheck()
 	assert.False(status.GoodToGo)
-	assert.EqualValues(localErrorMessage+"\n"+localErrorMessage+"\n"+localErrorMessage+"\n", status.Message)
+	assert.EqualValues(localErrorMessage+"\n"+localErrorMessage+"\n"+localErrorMessage, status.Message)
 }
 
 func TestCanRunOneStatusCheckThatAlwaysPasses(t *testing.T) {
 	assert := assert.New(t)
-	statusCheck := GoodToGoChecks{
-		Checkers: []StatusChecker{localNoError},
-	}
-	status := statusCheck.RunChecks()
+	status := StatusChecker(localNoError).RunCheck()
 	assert.True(status.GoodToGo)
 }
 
 func TestCanRunManyStatusCheckThatAlwaysPass(t *testing.T) {
 	assert := assert.New(t)
-	statusCheck := GoodToGoChecks{
-		Checkers: []StatusChecker{localNoError, localNoError, localNoError},
-	}
-	status := statusCheck.RunChecks()
+	statusCheck := FailAtEndSequentialChecker([]StatusChecker{localNoError, localNoError, localNoError})
+	status := statusCheck.RunCheck()
 	assert.True(status.GoodToGo)
 	assert.EqualValues("OK", status.Message)
 }

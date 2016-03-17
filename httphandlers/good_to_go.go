@@ -10,21 +10,21 @@ const (
 	GTGPath = "/__gtg"
 )
 
-type goodToGoChecks struct {
-	g2g.GoodToGoChecks
+type goodToGoChecker struct {
+	g2g.StatusChecker
 }
 
-func NewGoodToGoHandler(checkers g2g.GoodToGoChecks) *goodToGoChecks {
-	return &goodToGoChecks{checkers}
+func NewGoodToGoHandler(checker g2g.StatusChecker) *goodToGoChecker {
+	return &goodToGoChecker{checker}
 
 }
 
 // GoodToGoHandler runs the status checks and sends an HTTP status message
-func (checkers goodToGoChecks) GoodToGoHandler(w http.ResponseWriter, r *http.Request) {
+func (checker goodToGoChecker) GoodToGoHandler(w http.ResponseWriter, r *http.Request) {
 	if methodSupported(w, r) {
 		w.Header().Set(contentType, plainText)
 		w.Header().Set(cacheControl, noCache)
-		status := checkers.RunChecks()
+		status := checker.RunCheck()
 		if status.GoodToGo {
 			w.WriteHeader(http.StatusOK)
 			w.Write([]byte(status.Message))
