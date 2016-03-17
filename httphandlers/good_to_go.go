@@ -11,12 +11,12 @@ const (
 )
 
 type goodToGoChecker struct {
-	g2g.StatusChecker
+	gtg.StatusChecker
 }
 
-func NewGoodToGoHandler(checker g2g.StatusChecker) *goodToGoChecker {
+// NewGoodToGoHandler is used to construct a new GoodToGoHandler
+func NewGoodToGoHandler(checker gtg.StatusChecker) *goodToGoChecker {
 	return &goodToGoChecker{checker}
-
 }
 
 // GoodToGoHandler runs the status checks and sends an HTTP status message

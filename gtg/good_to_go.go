@@ -1,9 +1,8 @@
-package g2g
+package gtg
 
 // Implementation of the [FT Good To Go standard](https://docs.google.com/document/d/11paOrAIl9eIOqUEERc9XMaaL3zouJDdkmb-gExYFnw0)
 
 import (
-	"fmt"
 	"time"
 )
 

@@ -1,4 +1,4 @@
-package g2g
+package gtg
 
 import (
 	"github.com/stretchr/testify/assert"
