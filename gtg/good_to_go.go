@@ -2,6 +2,16 @@ package g2g
 
 // Implementation of the [FT Good To Go standard](https://docs.google.com/document/d/11paOrAIl9eIOqUEERc9XMaaL3zouJDdkmb-gExYFnw0)
 
+import (
+	"fmt"
+	"time"
+)
+
+const (
+	timeoutMessage = "Timeout running status check"
+	timeout        = 3
+)
+
 // Status is the result of running a checker, if the service is GoodToGo then it can serve requests. If the message isn't GoodToGo then the message should be in plain text "describing the nature of the problem that prevents the application being good to go.  This text should be sufficient for a non-domain expert to be able to resolve the problem"
 type Status struct {
 	Message  string
@@ -54,9 +64,18 @@ func FailAtEndSequentialChecker(checkers []StatusChecker) (checker StatusChecker
 
 // RunCheck executes a checker
 func (check StatusChecker) RunCheck() Status {
-	status := check()
-	if status.GoodToGo {
-		status.Message = "OK"
+	statusChannel := make(chan Status, 1)
+	go func() {
+		status := check()
+		if status.GoodToGo {
+			status.Message = "OK"
+		}
+		statusChannel <- status
+	}()
+	select {
+	case status := <-statusChannel:
+		return status
+	case <-time.After(time.Second * time.Duration(timeout)):
+		return Status{GoodToGo: false, Message: timeoutMessage}
 	}
-	return status
 }

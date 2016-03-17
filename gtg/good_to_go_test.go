@@ -3,6 +3,7 @@ package g2g
 import (
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"time"
 )
 
 func TestCanRunOneStatusCheckThatAlwaysFails(t *testing.T) {
@@ -12,7 +13,7 @@ func TestCanRunOneStatusCheckThatAlwaysFails(t *testing.T) {
 	assert.EqualValues(status.Message, localErrorMessage)
 }
 
-func TestWillRunOneOfManyStatusCheckThatAlwaysFail(t *testing.T) {
+func TestWillRunOneOfManyStatusChecksThatAlwaysFail(t *testing.T) {
 	assert := assert.New(t)
 	statusCheck := FailFastSequentialChecker([]StatusChecker{localError, localError, localError})
 	status := statusCheck.RunCheck()
@@ -20,7 +21,7 @@ func TestWillRunOneOfManyStatusCheckThatAlwaysFail(t *testing.T) {
 	assert.EqualValues(localErrorMessage, status.Message)
 }
 
-func TestWillRunAllOfManyStatusCheckThatAlwaysFail(t *testing.T) {
+func TestWillRunAllOfManyStatusChecksThatAlwaysFail(t *testing.T) {
 	assert := assert.New(t)
 	statusCheck := FailAtEndSequentialChecker([]StatusChecker{localError, localError, localError})
 	status := statusCheck.RunCheck()
@@ -34,12 +35,20 @@ func TestCanRunOneStatusCheckThatAlwaysPasses(t *testing.T) {
 	assert.True(status.GoodToGo)
 }
 
-func TestCanRunManyStatusCheckThatAlwaysPass(t *testing.T) {
+func TestCanRunManyStatusChecksThatAlwaysPass(t *testing.T) {
 	assert := assert.New(t)
 	statusCheck := FailAtEndSequentialChecker([]StatusChecker{localNoError, localNoError, localNoError})
 	status := statusCheck.RunCheck()
 	assert.True(status.GoodToGo)
 	assert.EqualValues("OK", status.Message)
+}
+
+func TestTimeoutRunningManyStatusChecksThatAlwaysPass(t *testing.T) {
+	assert := assert.New(t)
+	statusCheck := FailAtEndSequentialChecker([]StatusChecker{localNoError, delayedChecker(localNoError, 5), localNoError})
+	status := statusCheck.RunCheck()
+	assert.False(status.GoodToGo)
+	assert.EqualValues(timeoutMessage, status.Message)
 }
 
 var localErrorMessage = "There is a problem with the wibble setting, please adjust your set"
@@ -54,4 +63,12 @@ func localNoError() (status Status) {
 	status.Message = "This is ignored"
 	status.GoodToGo = true
 	return status
+}
+
+func delayedChecker(checker StatusChecker, secondsDelay int) StatusChecker {
+	fn := func() Status {
+		time.Sleep(time.Second * time.Duration(secondsDelay))
+		return checker()
+	}
+	return fn
 }
