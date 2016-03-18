@@ -15,8 +15,8 @@ type goodToGoChecker struct {
 }
 
 // NewGoodToGoHandler is used to construct a new GoodToGoHandler
-func NewGoodToGoHandler(checker gtg.StatusChecker) *goodToGoChecker {
-	return &goodToGoChecker{checker}
+func NewGoodToGoHandler(checker gtg.StatusChecker) func(http.ResponseWriter, *http.Request) {
+	return goodToGoChecker{checker}.GoodToGoHandler
 }
 
 // GoodToGoHandler runs the status checks and sends an HTTP status message

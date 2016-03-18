@@ -40,7 +40,7 @@ func TestGTGHandlerNoError(t *testing.T) {
 	req, err := http.NewRequest("GET", GTGPath, nil)
 	assert.NoError(t, err)
 	w := httptest.NewRecorder()
-	handler.GoodToGoHandler(w, req)
+	handler(w, req)
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.EqualValues(t, "OK", w.Body.String())
 }
@@ -50,7 +50,7 @@ func TestGTGHandlerError(t *testing.T) {
 	req, err := http.NewRequest("GET", GTGPath, nil)
 	assert.NoError(t, err)
 	w := httptest.NewRecorder()
-	handler.GoodToGoHandler(w, req)
+	handler(w, req)
 	assert.Equal(t, http.StatusServiceUnavailable, w.Code)
 	assert.NotContains(t, "OK", w.Body.String())
 }
@@ -60,7 +60,7 @@ func TestGTGHandlerTimeoutError(t *testing.T) {
 	req, err := http.NewRequest("GET", GTGPath, nil)
 	assert.NoError(t, err)
 	w := httptest.NewRecorder()
-	handler.GoodToGoHandler(w, req)
+	handler(w, req)
 	assert.Equal(t, http.StatusServiceUnavailable, w.Code)
 	assert.EqualValues(t, "Timeout running status check", w.Body.String())
 }
