@@ -15,7 +15,7 @@ const (
 
 //BuildInfoHandler provides a JSON representation of the build-info.
 func BuildInfoHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.Header().Set(contentType, applicationJSON)
 	if methodSupported(w, r) {
 		if err := json.NewEncoder(w).Encode(buildinfo.GetBuildInfo()); err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
