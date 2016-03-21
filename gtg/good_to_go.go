@@ -61,7 +61,31 @@ func FailAtEndSequentialChecker(checkers []StatusChecker) (checker StatusChecker
 	return f
 }
 
-// RunCheck executes a checker
+// FailFastParallelCheck creates a composite checker that will run all checkers simultaneously. As soon as any of the checkers fail then the other checkers are ignored.
+func FailFastParallelCheck(checkers []StatusChecker) StatusChecker {
+	fn := func() Status {
+		statusChannel := make(chan Status, len(checkers))
+		for idx := range checkers {
+			check := checkers[idx]
+			go func() {
+				status := check()
+				statusChannel <- status
+			}()
+		}
+		for idx := 0; idx < len(checkers); idx++ {
+			select {
+			case status := <-statusChannel:
+				if status.GoodToGo == false {
+					return status
+				}
+			}
+		}
+		return Status{GoodToGo: true}
+	}
+	return fn
+}
+
+// RunCheck executes a checker and returns the result as a status
 func (check StatusChecker) RunCheck() Status {
 	statusChannel := make(chan Status, 1)
 	go func() {
