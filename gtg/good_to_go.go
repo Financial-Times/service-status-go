@@ -72,7 +72,7 @@ func FailFastParallelCheck(checkers []StatusChecker) StatusChecker {
 				statusChannel <- status
 			}()
 		}
-		for idx := 0; idx < len(checkers); idx++ {
+		for range checkers {
 			select {
 			case status := <-statusChannel:
 				if status.GoodToGo == false {
