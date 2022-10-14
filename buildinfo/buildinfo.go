@@ -1,16 +1,13 @@
 package buildinfo
 
 import (
-	"fmt"
-	semver "github.com/hashicorp/go-version"
-	"regexp"
+	"runtime"
+	"runtime/debug"
 )
 
-var version string
-var repository string
-var revision string
-var builder string
-var dateTime string
+func init() {
+	parseAndConstruct()
+}
 
 // BuildInfo structure
 type BuildInfo struct {
@@ -23,68 +20,39 @@ type BuildInfo struct {
 
 var buildInfo BuildInfo
 
-func init() {
-	parseAndConstruct()
-}
-
-func parseAndConstruct() {
-	if err := parseRepository(); err != nil {
-		repository = err.Error()
-	}
-	if err := parseRevision(); err != nil {
-		revision = err.Error()
-	}
-	if err := parseVersion(); err != nil {
-		version = err.Error()
-	}
-	if err := parseDateTime(); err != nil {
-		dateTime = err.Error()
-	}
-	buildInfo = BuildInfo{version, repository, revision, builder, dateTime}
-}
-
 // GetBuildInfo returns the current buildInfo as set by the ldflags
 func GetBuildInfo() BuildInfo {
 	return buildInfo
 }
 
-// currently suport https repositories
-const repositorylMatch = "((git|ssh|http(s)?)|(git@[\\w\\.]+))(:(//)?)([\\w\\.@\\:/\\-~]+)(\\.git)?(/)?"
-
-// currently needs to be a sha1 (ala git)
-const revisionMatch = "^[0-9a-f]{5,40}$"
-
-// variant of the iso-8601 standard (i.e. without the seperators)
-const dateTimeMatch = "^[0-9]{14}"
-
-var repositoryRegex = regexp.MustCompile(repositorylMatch)
-var revisionRegex = regexp.MustCompile(revisionMatch)
-var dateTimeRegex = regexp.MustCompile(dateTimeMatch)
-
-func parseRepository() error {
-	if !repositoryRegex.MatchString(repository) {
-		return fmt.Errorf("Repository %s does not match regex %s", repository, repositorylMatch)
+func parseAndConstruct() {
+	info, ok := debug.ReadBuildInfo()
+	if !ok {
+		buildInfo = BuildInfo{
+			Version:    "Failed to read debug BuildInfo",
+			Repository: "",
+			Revision:   "",
+			Builder:    "",
+			DateTime:   "",
+		}
+		return
 	}
-	return nil
-}
+	var revision string
+	var buildTime string
 
-func parseRevision() error {
-	if !revisionRegex.MatchString(revision) {
-		return fmt.Errorf("Revision %s does not match regex %s", revision, revisionMatch)
+	for _, s := range info.Settings {
+		switch s.Key {
+		case "vcs.revision":
+			revision = s.Value
+		case "vcs.time":
+			buildTime = s.Value
+		}
 	}
-	return nil
-}
-
-func parseVersion() error {
-	if _, err := semver.NewVersion(version); err != nil {
-		return fmt.Errorf("Version %s is not a semantic version", version)
+	buildInfo = BuildInfo{
+		Version:    info.Main.Version,
+		Repository: info.Path,
+		Revision:   revision,
+		Builder:    runtime.Version(),
+		DateTime:   buildTime,
 	}
-	return nil
-}
-
-func parseDateTime() error {
-	if !dateTimeRegex.MatchString(dateTime) {
-		return fmt.Errorf("dateTime %s does not match regex %s", dateTime, dateTimeRegex)
-	}
-	return nil
 }
