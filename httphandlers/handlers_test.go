@@ -1,12 +1,13 @@
 package httphandlers
 
 import (
-	"github.com/Financial-Times/service-status-go/gtg"
-	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 	"time"
+
+	"github.com/Financial-Times/service-status-go/gtg"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestPingHandler(t *testing.T) {

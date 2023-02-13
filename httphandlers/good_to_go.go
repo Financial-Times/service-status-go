@@ -1,8 +1,9 @@
 package httphandlers
 
 import (
-	"github.com/Financial-Times/service-status-go/gtg"
 	"net/http"
+
+	"github.com/Financial-Times/service-status-go/gtg"
 )
 
 const (
