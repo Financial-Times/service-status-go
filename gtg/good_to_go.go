@@ -8,7 +8,7 @@ import (
 
 const (
 	timeoutMessage = "Timeout running status check"
-	timeout        = 3 * time.Second
+	timeout        = 5 * time.Second
 )
 
 // Status is the result of running a checker, if the service is GoodToGo then it can serve requests.
