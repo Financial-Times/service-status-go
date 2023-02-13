@@ -14,7 +14,7 @@ const (
 	noCache          = "no-cache"
 )
 
-func error(msg string) []byte {
+func formatErrorMessage(msg string) []byte {
 	return []byte(fmt.Sprintf(`{"error":"%s"}`, msg))
 }
 
@@ -24,6 +24,6 @@ func methodSupported(w http.ResponseWriter, r *http.Request) bool {
 	}
 	w.Header().Set("Allow", "GET, HEAD")
 	w.WriteHeader(http.StatusMethodNotAllowed)
-	w.Write(error(fmt.Sprintf(methodNotAllowed, r.Method)))
+	w.Write(formatErrorMessage(fmt.Sprintf(methodNotAllowed, r.Method)))
 	return false
 }

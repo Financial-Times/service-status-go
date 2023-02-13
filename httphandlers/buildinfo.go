@@ -20,7 +20,7 @@ func BuildInfoHandler(w http.ResponseWriter, r *http.Request) {
 	if methodSupported(w, r) {
 		if err := json.NewEncoder(w).Encode(buildinfo.GetBuildInfo()); err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
-			w.Write(error(err.Error()))
+			w.Write(formatErrorMessage(err.Error()))
 		}
 	}
 }

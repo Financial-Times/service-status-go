@@ -37,7 +37,7 @@ func TestBuildInfoHandler(t *testing.T) {
 }
 
 func TestGTGHandlerNoError(t *testing.T) {
-	handler := NewGoodToGoHandler(gtg.StatusChecker(everythingIsOK))
+	handler := NewGoodToGoHandler(everythingIsOK)
 	req, err := http.NewRequest("GET", GTGPath, nil)
 	assert.NoError(t, err)
 	w := httptest.NewRecorder()
@@ -47,7 +47,7 @@ func TestGTGHandlerNoError(t *testing.T) {
 }
 
 func TestGTGHandlerError(t *testing.T) {
-	handler := NewGoodToGoHandler(gtg.StatusChecker(everythingIsNotOK))
+	handler := NewGoodToGoHandler(everythingIsNotOK)
 	req, err := http.NewRequest("GET", GTGPath, nil)
 	assert.NoError(t, err)
 	w := httptest.NewRecorder()
@@ -57,7 +57,7 @@ func TestGTGHandlerError(t *testing.T) {
 }
 
 func TestGTGHandlerTimeoutError(t *testing.T) {
-	handler := NewGoodToGoHandler(gtg.StatusChecker(takesTooLong))
+	handler := NewGoodToGoHandler(takesTooLong)
 	req, err := http.NewRequest("GET", GTGPath, nil)
 	assert.NoError(t, err)
 	w := httptest.NewRecorder()

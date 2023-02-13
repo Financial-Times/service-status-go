@@ -11,7 +11,9 @@ const (
 	timeout        = 3
 )
 
-// Status is the result of running a checker, if the service is GoodToGo then it can serve requests. If the message isn't GoodToGo then the message should be in plain text "describing the nature of the problem that prevents the application being good to go.  This text should be sufficient for a non-domain expert to be able to resolve the problem"
+// Status is the result of running a checker, if the service is GoodToGo then it can serve requests.
+// If the message isn't GoodToGo then the message should be in plain text "describing the nature of the problem that prevents the application being good to go.
+// This text should be sufficient for a non-domain expert to be able to resolve the problem"
 type Status struct {
 	Message  string
 	GoodToGo bool
@@ -61,7 +63,8 @@ func FailAtEndSequentialChecker(checkers []StatusChecker) (checker StatusChecker
 	return f
 }
 
-// FailFastParallelCheck creates a composite checker that will run all checkers simultaneously. As soon as any of the checkers fail then the other checkers are ignored.
+// FailFastParallelCheck creates a composite checker that will run all checkers simultaneously.
+// As soon as any of the checkers fail then the other checkers are ignored.
 func FailFastParallelCheck(checkers []StatusChecker) StatusChecker {
 	fn := func() Status {
 		statusChannel := make(chan Status, len(checkers))
