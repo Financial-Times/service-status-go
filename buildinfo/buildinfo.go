@@ -2,8 +2,9 @@ package buildinfo
 
 import (
 	"fmt"
-	semver "github.com/hashicorp/go-version"
 	"regexp"
+
+	semver "github.com/hashicorp/go-version"
 )
 
 var version string

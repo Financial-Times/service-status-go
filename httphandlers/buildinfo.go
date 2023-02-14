@@ -2,8 +2,9 @@ package httphandlers
 
 import (
 	"encoding/json"
-	"github.com/Financial-Times/service-status-go/buildinfo"
 	"net/http"
+
+	"github.com/Financial-Times/service-status-go/buildinfo"
 )
 
 const (
@@ -13,13 +14,13 @@ const (
 	BuildInfoPathDW = "/build-info"
 )
 
-//BuildInfoHandler provides a JSON representation of the build-info.
+// BuildInfoHandler provides a JSON representation of the build-info.
 func BuildInfoHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set(contentType, applicationJSON)
 	if methodSupported(w, r) {
 		if err := json.NewEncoder(w).Encode(buildinfo.GetBuildInfo()); err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
-			w.Write(error(err.Error()))
+			w.Write(formatErrorMessage(err.Error()))
 		}
 	}
 }

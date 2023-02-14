@@ -8,7 +8,7 @@ import (
 const (
 	// PingPath follows the general FT standards for path as it starts with an underscore, although technically Ping is not a FT Standard healthcheck
 	PingPath = "/__ping"
-	// PingPathDW is the DropWizard equivalent path, here for compatabillity for monitors that typically talk to DropWizard ms
+	// PingPathDW is the DropWizard equivalent path, here for compatibility for monitors that typically talk to DropWizard ms
 	PingPathDW = "/ping"
 )
 
@@ -17,5 +17,4 @@ func PingHandler(w http.ResponseWriter, r *http.Request) {
 	if methodSupported(w, r) {
 		fmt.Fprintf(w, "pong")
 	}
-
 }

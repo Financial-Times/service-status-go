@@ -1,8 +1,9 @@
 package httphandlers
 
 import (
-	"github.com/Financial-Times/service-status-go/gtg"
 	"net/http"
+
+	"github.com/Financial-Times/service-status-go/gtg"
 )
 
 const (
@@ -27,10 +28,9 @@ func (checker goodToGoChecker) GoodToGoHandler(w http.ResponseWriter, r *http.Re
 		status := checker.RunCheck()
 		if status.GoodToGo {
 			w.WriteHeader(http.StatusOK)
-			w.Write([]byte(status.Message))
 		} else {
 			w.WriteHeader(http.StatusServiceUnavailable)
-			w.Write([]byte(status.Message))
 		}
+		w.Write([]byte(status.Message))
 	}
 }
