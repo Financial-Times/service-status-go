@@ -4,12 +4,16 @@ package gtg
 
 import (
 	"time"
+
+	"github.com/Financial-Times/go-logger/v2"
 )
 
 const (
 	timeoutMessage = "Timeout running status check"
-	timeout        = 5 * time.Second
+	timeout        = 10 * time.Second
 )
+
+var log = logger.NewUPPLogger("GTG", "INFO")
 
 // Status is the result of running a checker, if the service is GoodToGo then it can serve requests.
 // If the message isn't GoodToGo then the message should be in plain text "describing the nature of the problem that prevents the application being good to go.
@@ -85,6 +89,7 @@ func FailFastParallelCheck(checkers []StatusChecker) StatusChecker {
 
 // RunCheck executes a checker and returns the result as a status
 func (check StatusChecker) RunCheck() Status {
+	log.Info("Running check...")
 	statusChannel := make(chan Status, 1)
 	go func() {
 		status := check()
@@ -95,8 +100,10 @@ func (check StatusChecker) RunCheck() Status {
 	}()
 	select {
 	case status := <-statusChannel:
+		log.WithField("status", status).Info("Successful check")
 		return status
 	case <-time.After(timeout):
+		log.Error("Timed out check")
 		return Status{
 			GoodToGo: false,
 			Message:  timeoutMessage,
