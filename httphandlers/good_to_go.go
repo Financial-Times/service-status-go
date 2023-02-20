@@ -1,10 +1,11 @@
 package httphandlers
 
 import (
-	"github.com/Financial-Times/go-logger/v2"
 	"net/http"
 
+	"github.com/Financial-Times/go-logger/v2"
 	"github.com/Financial-Times/service-status-go/gtg"
+	"github.com/google/uuid"
 )
 
 const (
@@ -26,7 +27,8 @@ func NewGoodToGoHandler(checker gtg.StatusChecker) func(http.ResponseWriter, *ht
 // GoodToGoHandler runs the status checks and sends an HTTP status message
 func (checker goodToGoChecker) GoodToGoHandler(w http.ResponseWriter, r *http.Request) {
 	if methodSupported(w, r) {
-		log.Info("Running GTG handler...")
+		logEntry := log.WithUUID(uuid.New().String())
+		logEntry.Info("Running GTG handler...")
 		w.Header().Set(contentType, plainText)
 		w.Header().Set(cacheControl, noCache)
 		status := checker.RunCheck()
@@ -35,7 +37,7 @@ func (checker goodToGoChecker) GoodToGoHandler(w http.ResponseWriter, r *http.Re
 		} else {
 			w.WriteHeader(http.StatusServiceUnavailable)
 		}
-		log.WithField("status", status).Info("GTG handler finished")
+		logEntry.WithField("status", status).Info("GTG handler finished")
 		w.Write([]byte(status.Message))
 	}
 }

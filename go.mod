@@ -4,6 +4,7 @@ go 1.19
 
 require (
 	github.com/Financial-Times/go-logger/v2 v2.0.1
+	github.com/google/uuid v1.3.0
 	github.com/hashicorp/go-version v1.6.0
 	github.com/stretchr/testify v1.8.1
 )

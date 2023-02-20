@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/Financial-Times/go-logger/v2"
+	"github.com/google/uuid"
 )
 
 const (
@@ -89,7 +90,9 @@ func FailFastParallelCheck(checkers []StatusChecker) StatusChecker {
 
 // RunCheck executes a checker and returns the result as a status
 func (check StatusChecker) RunCheck() Status {
-	log.Info("Running check...")
+	logEntry := log.WithUUID(uuid.New().String())
+
+	logEntry.Info("Running check...")
 	statusChannel := make(chan Status, 1)
 	go func() {
 		status := check()
@@ -100,10 +103,10 @@ func (check StatusChecker) RunCheck() Status {
 	}()
 	select {
 	case status := <-statusChannel:
-		log.WithField("status", status).Info("Successful check")
+		logEntry.WithField("status", status).Info("Successful check")
 		return status
 	case <-time.After(timeout):
-		log.Error("Timed out check")
+		logEntry.Error("Timed out check")
 		return Status{
 			GoodToGo: false,
 			Message:  timeoutMessage,
