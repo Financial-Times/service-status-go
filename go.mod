@@ -1,6 +1,6 @@
 module github.com/Financial-Times/service-status-go
 
-go 1.19
+go 1.22
 
 require (
 	github.com/hashicorp/go-version v1.6.0
