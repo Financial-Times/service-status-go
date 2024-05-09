@@ -1,1 +1,6 @@
 service-status-go
+*.iml
+.idea
+vendor/*/
+.project
+.vscode
