@@ -49,13 +49,13 @@ func GetBuildInfo() BuildInfo {
 	return buildInfo
 }
 
-// currently suport https repositories
+// currently support https repositories
 const repositorylMatch = "((git|ssh|http(s)?)|(git@[\\w\\.]+))(:(//)?)([\\w\\.@\\:/\\-~]+)(\\.git)?(/)?"
 
 // currently needs to be a sha1 (ala git)
 const revisionMatch = "^[0-9a-f]{5,40}$"
 
-// variant of the iso-8601 standard (i.e. without the seperators)
+// variant of the iso-8601 standard (i.e. without the separators)
 const dateTimeMatch = "^[0-9]{14}"
 
 var repositoryRegex = regexp.MustCompile(repositorylMatch)
