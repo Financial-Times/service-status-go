@@ -1,9 +1,9 @@
 module github.com/Financial-Times/service-status-go
 
-go 1.22
+go 1.23
 
 require (
-	github.com/hashicorp/go-version v1.6.0
+	github.com/hashicorp/go-version v1.7.0
 	github.com/stretchr/testify v1.9.0
 )
 
